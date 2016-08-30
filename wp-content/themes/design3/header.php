@@ -52,9 +52,9 @@ $image = wp_get_attachment_image_src( $custom_logo_id , 'full' );
 						</div>
 						<div class="right-field col-md-4">
 							<div class="contact">
-								<h4><i class="fa fa-envelope-o"></i><a href="mailto:info@trepebilvard.se">info@trepebilvard.se</a></h4>
-								<h4><i class="fa fa-phone-square"></i>018 - 155 605</h4>
-								<h4><i class="fa fa-clock-o"></i>08.00 - 17.00</h4>
+								<h4><i class="fa fa-envelope-o"></i><a href="mailto:info@generatorservice.se">info@generatorservice.se</a></h4>
+								<h4><i class="fa fa-phone-square"></i>018-10 63 85</h4>
+								<h4><i class="fa fa-clock-o"></i>07.00 - 16.00</h4>
 							</div>
 						</div>
 					</div>

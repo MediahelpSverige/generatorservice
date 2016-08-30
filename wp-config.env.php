@@ -29,7 +29,7 @@ switch ($hostname) {
         define('WP_ENV', 'development');
         break;
     
-    case 'trepebilvard.mediahelpcrm.se':
+    case 'generatorservice.mediahelpcrm.se':
         define('WP_ENV', 'staging');
         break;
 

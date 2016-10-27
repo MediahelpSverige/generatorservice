@@ -2,27 +2,27 @@
 /**
  * Development environment config settings
  *
- * Enter any WordPress config settings that are specific to this environment 
+ * Enter any WordPress config settings that are specific to this environment
  * in this file.
- * 
+ *
  * @package    Studio 24 WordPress Multi-Environment Config
  * @version    1.0
  * @author     Studio 24 Ltd  <info@studio24.net>
  */
-  
+
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', 'generatorservice');
+define('DB_NAME', '180958-generatorservice');
 
 /** MySQL database username */
-define('DB_USER', 'generatorservice');
+define('DB_USER', '180958_tj99619');
 
 /** MySQL database password */
 define('DB_PASSWORD', 'steel1992');
 
 /** MySQL hostname */
-define('DB_HOST', 'localhost');
+define('DB_HOST', 'generatorservice-180958.mysql.binero.se');
 
 define('WP_SITEURL', 'http://generatorservice.mediahelpcrm.se');
 define('WP_HOME', 'http://generatorservice.mediahelpcrm.se');

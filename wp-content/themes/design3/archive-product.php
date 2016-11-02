@@ -18,7 +18,10 @@ get_header();
 		</div>
 		<div class="col-md-9">
 			<div class="service-wrap" id="ajax-response">
+        <?php $post = get_post(9); ?>
+        <?php setup_postdata( $post ); ?>
 				<?php the_content(); ?>
+        <?php wp_reset_postdata(); ?>
 				<div class="row">
 					<div class="col-md-12">
 						<div class="offert"></div>

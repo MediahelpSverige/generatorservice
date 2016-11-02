@@ -9,7 +9,6 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('template_url')?>/bower_components/animate.css/animate.css">
 		<link href='<?php bloginfo( 'template_url' ); ?>/bower_components/swiper/dist/css/swiper.min.css' rel='stylesheet' type='text/css'>
-		<link rel="icon" href="<?php bloginfo('url')?>/favicon.png" type="image/x-icon" />
 <link rel="shortcut icon" href="<?php bloginfo('url')?>/favicon.png" type="image/x-icon" />
 		<link href='<?php bloginfo( 'template_url' ); ?>/css/custom.css' rel='stylesheet' type='text/css'>
 		<link href='<?php bloginfo( 'template_url' ); ?>/css/responsive.css' rel='stylesheet' type='text/css'>

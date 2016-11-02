@@ -1,7 +1,5 @@
 <?php
-/*
-Template name: Våra Produkter
-*/
+
 get_header();
 ?>
 <section class="section-white single">
@@ -17,7 +15,7 @@ get_header();
 			</div>
 		</div>
 		<div class="col-md-9">
-			<div class="service-wrap" id="ajax-response">
+			<div class="service-wrap">
         <?php $post = get_post(9); ?>
         <?php setup_postdata( $post ); ?>
 				<?php the_content(); ?>

@@ -2,10 +2,6 @@
 
 	//alert('triggered');
 
-	/* <![CDATA[ */
-var ajaxpagination = {"ajaxurl":"http:\/\/localhost:8080/generatorservice\/wp-admin\/admin-ajax.php"};
-/* ]]> */
-    
     $(document).on( 'click', '.produkt-header', function( event ) {
         event.preventDefault();
 

@@ -14,11 +14,12 @@
 		<link href='<?php bloginfo( 'template_url' ); ?>/css/custom.css' rel='stylesheet' type='text/css'>
 		<link href='<?php bloginfo( 'template_url' ); ?>/css/responsive.css' rel='stylesheet' type='text/css'>
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+		<script type="text/javascript" src="<?php bloginfo('template_url'); ?>/js/bundle.js"></script>
 		<script type="text/javascript" src="<?php bloginfo( 'template_url' ); ?>/bower_components/jquery/dist/jquery.min.js"></script>
 		<script type="text/javascript" src="<?php bloginfo( 'template_url' ); ?>/js/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="<?php bloginfo( 'template_url' ); ?>/js/printElement.min.js"></script>
-		
-		
+
+
 		<script type="text/javascript" src="<?php bloginfo( 'template_url' ); ?>/bower_components/moment/min/moment.min.js"></script>
 		<script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 		<script type="text/javascript" src="<?php bloginfo( 'template_url' ); ?>/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
@@ -42,13 +43,13 @@
 					<div class="row">
 						<div class="left-field col-md-4">
 
-						<?php 
+						<?php
 $custom_logo_id = get_theme_mod( 'custom_logo' );
 $image = wp_get_attachment_image_src( $custom_logo_id , 'full' );
  ?>
 	<a href="<?php bloginfo('url'); ?>"><img src="<?php echo $image[0]; ?>"></a>
 
-		
+
 						</div>
 						<div class="right-field col-md-4">
 							<div class="contact">

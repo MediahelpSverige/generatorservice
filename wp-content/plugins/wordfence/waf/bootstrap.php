@@ -8,10 +8,12 @@ if (!defined('WFWAF_AUTO_PREPEND')) {
 	define('WFWAF_AUTO_PREPEND', true);
 }
 
+require_once dirname(__FILE__) . '/wfWAFUserIPRange.php';
+require_once dirname(__FILE__) . '/wfWAFIPBlocksController.php';
 require_once dirname(__FILE__) . '/../vendor/wordfence/wf-waf/src/init.php';
 
 class wfWAFWordPressRequest extends wfWAFRequest {
-
+	
 	/**
 	 * @param wfWAFRequest|null $request
 	 * @return wfWAFRequest
@@ -65,7 +67,6 @@ class wfWAFWordPressObserver extends wfWAFBaseObserver {
 		// Whitelisted IPs (Wordfence config)
 		$whitelistedIPs = wfWAF::getInstance()->getStorageEngine()->getConfig('whitelistedIPs');
 		if ($whitelistedIPs) {
-			require_once dirname(__FILE__) . '/wfWAFUserIPRange.php';
 			if (!is_array($whitelistedIPs)) {
 				$whitelistedIPs = explode(',', $whitelistedIPs);
 			}
@@ -75,6 +76,35 @@ class wfWAFWordPressObserver extends wfWAFBaseObserver {
 					throw new wfWAFAllowException('Wordfence whitelisted IP.');
 				}
 			}
+		}
+		
+		// Check plugin blocking
+		if ($result = wfWAF::getInstance()->willPerformFinalAction(wfWAF::getInstance()->getRequest())) {
+			if ($result === true) { $result = 'Not available'; } // Should not happen but can if the reason in the blocks table is empty
+			wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('finalAction' => $result)));
+		}
+	}
+	
+	public function afterRunRules()
+	{
+		//wfWAFLogException
+		$watchedIPs = wfWAF::getInstance()->getStorageEngine()->getConfig('watchedIPs');
+		if ($watchedIPs) {
+			if (!is_array($watchedIPs)) {
+				$watchedIPs = explode(',', $watchedIPs);
+			}
+			foreach ($watchedIPs as $watchedIP) {
+				$ipRange = new wfWAFUserIPRange($watchedIP);
+				if ($ipRange->isIPInRange(wfWAF::getInstance()->getRequest()->getIP())) {
+					throw new wfWAFLogException('Wordfence watched IP.');
+				}
+			}
+		}
+		
+		if ($reason = wfWAF::getInstance()->getRequest()->getMetadata('finalAction')) {
+			$e = new wfWAFBlockException($reason['action']);
+			$e->setRequest(wfWAF::getInstance()->getRequest());
+			throw $e;
 		}
 	}
 }
@@ -91,15 +121,41 @@ class wfWAFWordPress extends wfWAF {
 	 * @param wfWAFBlockException $e
 	 * @param int $httpCode
 	 */
-	public function blockAction($e, $httpCode = 403) {
-		if ($this->isInLearningMode()) {
+	public function blockAction($e, $httpCode = 403, $redirect = false) {
+		if ($this->isInLearningMode() && !$e->getRequest()->getMetadata('finalAction')) {
 			register_shutdown_function(array(
 				$this, 'whitelistFailedRulesIfNot404',
 			));
 			$this->getStorageEngine()->logAttack($e->getFailedRules(), $e->getParamKey(), $e->getParamValue(), $e->getRequest());
 			$this->setLearningModeAttackException($e);
 		} else {
-			parent::blockAction($e, $httpCode);
+			$failedRules = $e->getFailedRules();
+			if (empty($failedRules)) {
+				$finalAction = $e->getRequest()->getMetadata('finalAction');
+				if (is_array($finalAction)) {
+					$finalAction = $finalAction['action'];
+					if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_REDIR) {
+						$redirect = wfWAFIPBlocksController::currentController()->countryRedirURL();
+					}
+					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_BYPASS_REDIR) {
+						$redirect = wfWAFIPBlocksController::currentController()->countryBypassRedirURL();
+					}
+					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_UAREFIPRANGE) {
+						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Advanced blocking in effect.', '503Time' => 3600)));
+						$httpCode = 503;
+					}
+					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY) {
+						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Access from your area has been temporarily limited for security reasons.', '503Time' => 3600)));
+						$httpCode = 503;
+					}
+					else if (is_string($finalAction) && strlen($finalAction) > 0) {
+						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => $finalAction, '503Time' => 3600)));
+						$httpCode = 503;
+					}
+				}
+			}
+			
+			parent::blockAction($e, $httpCode, $redirect);
 		}
 	}
 
@@ -107,15 +163,41 @@ class wfWAFWordPress extends wfWAF {
 	 * @param wfWAFBlockXSSException $e
 	 * @param int $httpCode
 	 */
-	public function blockXSSAction($e, $httpCode = 403) {
-		if ($this->isInLearningMode()) {
+	public function blockXSSAction($e, $httpCode = 403, $redirect = false) {
+		if ($this->isInLearningMode() && !$e->getRequest()->getMetadata('finalAction')) {
 			register_shutdown_function(array(
 				$this, 'whitelistFailedRulesIfNot404',
 			));
 			$this->getStorageEngine()->logAttack($e->getFailedRules(), $e->getParamKey(), $e->getParamValue(), $e->getRequest());
 			$this->setLearningModeAttackException($e);
 		} else {
-			parent::blockXSSAction($e, $httpCode);
+			$failedRules = $e->getFailedRules();
+			if (empty($failedRules)) {
+				$finalAction = $e->getRequest()->getMetadata('finalAction');
+				if (is_array($finalAction)) {
+					$finalAction = $finalAction['action'];
+					if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_REDIR) {
+						$redirect = wfWAFIPBlocksController::currentController()->countryRedirURL();
+					}
+					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY_BYPASS_REDIR) {
+						$redirect = wfWAFIPBlocksController::currentController()->countryBypassRedirURL();
+					}
+					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_UAREFIPRANGE) {
+						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Advanced blocking in effect.', '503Time' => 3600)));
+						$httpCode = 503;
+					}
+					else if ($finalAction == wfWAFIPBlocksController::WFWAF_BLOCK_COUNTRY) {
+						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => 'Access from your area has been temporarily limited for security reasons.', '503Time' => 3600)));
+						$httpCode = 503;
+					}
+					else if (is_string($finalAction) && strlen($finalAction) > 0) {
+						wfWAF::getInstance()->getRequest()->setMetadata(array_merge(wfWAF::getInstance()->getRequest()->getMetadata(), array('503Reason' => $finalAction, '503Time' => 3600)));
+						$httpCode = 503;
+					}
+				}
+			}
+			
+			parent::blockXSSAction($e, $httpCode, $redirect);
 		}
 	}
 
@@ -167,6 +249,32 @@ class wfWAFWordPress extends wfWAF {
 	public function isIPBlocked($ip) {
 		return false;
 	}
+	
+	/**
+	 * @param wfWAFRequest $request
+	 * @return bool|string false if it should not be blocked, otherwise true or a reason for blocking 
+	 */
+	public function willPerformFinalAction($request) {
+		try {
+			$disableWAFIPBlocking = $this->getStorageEngine()->getConfig('disableWAFIPBlocking');
+			$advancedBlockingEnabled = $this->getStorageEngine()->getConfig('advancedBlockingEnabled');
+		}
+		catch (Exception $e) {
+			return false;
+		}
+		
+		if ($disableWAFIPBlocking || !$advancedBlockingEnabled) {
+			return false;
+		}
+		
+		return wfWAFIPBlocksController::currentController()->shouldBlockRequest($request);
+	}
+	
+	public function uninstall() {
+		parent::uninstall();
+		@unlink(rtrim(WFWAF_LOG_PATH . '/') . '/.htaccess');
+		@rmdir(WFWAF_LOG_PATH);
+	}
 
 	/**
 	 * @return wfWAFRunException
@@ -187,7 +295,8 @@ if (!defined('WFWAF_LOG_PATH')) {
 	define('WFWAF_LOG_PATH', WP_CONTENT_DIR . '/wflogs/');
 }
 if (!is_dir(WFWAF_LOG_PATH)) {
-	@mkdir(WFWAF_LOG_PATH, 0755);
+	@mkdir(WFWAF_LOG_PATH, 0775);
+	@chmod(WFWAF_LOG_PATH, 0775);
 	@file_put_contents(rtrim(WFWAF_LOG_PATH . '/') . '/.htaccess', <<<APACHE
 <IfModule mod_authz_core.c>
 	Require all denied
@@ -198,6 +307,7 @@ if (!is_dir(WFWAF_LOG_PATH)) {
 </IfModule>
 APACHE
 	);
+	@chmod(rtrim(WFWAF_LOG_PATH . '/') . '/.htaccess', 0664);
 }
 
 
@@ -216,6 +326,7 @@ try {
 		if (!file_exists($rulesFile)) {
 			@touch($rulesFile);
 		}
+		@chmod($rulesFile, 0664);
 		if (is_writable($rulesFile)) {
 			wfWAF::getInstance()->setCompiledRulesFile($rulesFile);
 			break;

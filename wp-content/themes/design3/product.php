@@ -1,7 +1,4 @@
 <?php
-/*
-Template name: Våra Produkter
-*/
 get_header();
 ?>
 <section class="section-white single">

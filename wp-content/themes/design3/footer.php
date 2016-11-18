@@ -4,20 +4,15 @@
 <footer>
 	<div class="container">
 		<div class="footer-info">
-			<div class="left-field">
-				<h3 class="footer-title">Begär offert</h3>
-				<p> Vi hjälper till med en bred mäbgt tjänster. Fyll i vårt formulär och begär en generell offert så återkommer vi till dig så fort vi kan</p>
-				<a class="btn-blue" href="<?php bloginfo('url');?>/offert">Begär offert</a>
-			</div>
-			<div class="middle-field">
-				<h3 class="footer-title">Sidkarta</h3>
-				<?php wp_nav_menu( array( 'theme_location' => 'footer_nav', 'menu_class' => 'footer-nav-menu', 'container_class' => 'footer-menu-container') ); ?>
-			</div>
-			<div class="right-field">
-				<h3 class="footer-title">Kontakt</h3>
-				<ul>					<li><span><i></i>Adress:</span><span>Danmarksgatan 32</span></li>					<li><span>Postnummer:</span><span> 753 23</span></li>					<li><span><i></i>Postort</span><span>Uppsala</span></li>					<li><span><i></i>Telefon:</span><span> 018-155605</span></li>					<li><span><i></i>Epost:</span><span><a href="mailto:info@generatorservice.se">info@generatorservice.se</a></span></li>					<li><span>Orgnr<i></i></span><span>5568048119</span></li>					<li><span>Momsnr<i></i></span><span>SE556804811901</span></li>				</ul>				<div class="social-row">				</div>			</div>			<div class="clearfix"></div>		</div>	</div>	<div class="footer-bottom">		<div class="container">			<div class="footer-bottom-cont">
-				<p><i class="fa fa-copyright" aria-hidden="true"></i> Generatorservice AB AB 2016</p>			</div>		</div>			</div>
+				<h4 class="footer-title">Kontakt</h4>
+				<ul>
+				<p>Danmarksgatan 32, 753 23 Uppsala</p>
+				<p>018-10 63 85</p>
+			</ul>
+		</div>			</div>
+		<div class="bot-footer">
+			<p><i class="fa fa-copyright" aria-hidden="true"></i> Generatorservice AB AB 2016</p>
+		</div>
 				<?php wp_footer();?>
-				<script type="text/javascript">
-				</script>
+
 			</footer></body></html>

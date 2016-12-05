@@ -26,6 +26,7 @@ get_header();
 						the_post();
 						//
 						// Post Content here
+						the_post_thumbnail('medium');
 						the_title('<h1>','</h1>');
 						the_content();
 						//

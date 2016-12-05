@@ -9,7 +9,6 @@
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="<?php bloginfo('template_url')?>/bower_components/animate.css/animate.css">
 		<link href='<?php bloginfo( 'template_url' ); ?>/bower_components/swiper/dist/css/swiper.min.css' rel='stylesheet' type='text/css'>
-<link rel="shortcut icon" href="<?php bloginfo('url')?>/favicon.png" type="image/x-icon" />
 		<link href='<?php bloginfo( 'template_url' ); ?>/css/custom.css' rel='stylesheet' type='text/css'>
 		<link href='<?php bloginfo( 'template_url' ); ?>/css/responsive.css' rel='stylesheet' type='text/css'>
 		<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
@@ -24,7 +23,7 @@
 		<script type="text/javascript" src="<?php bloginfo( 'template_url' ); ?>/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"></script>
 		<link rel="stylesheet" href="<?php bloginfo( 'template_url' ); ?>/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.css" />
 		<script src="https://use.typekit.net/tdq5gcj.js"></script>
-		<script>try{Typekit.load({ async: true });}catch(e){}</script>
+		<script>try{Typekit.load({ async: false });}catch(e){}</script>
 		<script src='https://www.google.com/recaptcha/api.js'></script>
 	</head>
 	<body <?php body_class(); ?>>
